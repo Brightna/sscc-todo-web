@@ -116,7 +116,16 @@ def create_todo(body: TodoCreate):
     2. Todo(title=..., completed=False, created_at=now())를 만들어 session.add
     3. session.commit()으로 저장하고, session.refresh로 새 id를 받아 dict로 돌려준다
     """
-    raise HTTPException(status_code=501, detail="아직 구현하지 않았습니다")
+    title = body.title.strip() #1번의 body.title 앞뒤 공백 삭제
+    if not title:
+        raise HTTPException(status_code=400, detail="제목을 입력하세요") #1번의 400 돌려주기
+    
+    with Session(engine) as session:
+        todo = Todo(title=title, completed=False, created_at=now()) #2번의 객체 만들기
+        session.add(todo) #2번의 session에 넣기?
+        session.commit() #3번의 저장하기
+        session.refresh(todo) #3번의 id 받아오기
+        return to_dict(todo) #3번의 dict로 돌려주기
 
 
 @app.patch("/todos/{todo_id}")
