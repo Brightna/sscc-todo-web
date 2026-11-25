@@ -136,8 +136,17 @@ def update_todo(todo_id: int, body: TodoUpdate):
     2. body.title이 있으면 title을, body.completed가 있으면 completed를 바꾼다
     3. session.commit() 뒤 dict로 돌려준다
     """
-    raise HTTPException(status_code=501, detail="아직 구현하지 않았습니다")
+    with Session(engine) as session:
+        todo = session.get(Todo, todo_id)
+        if todo is None:
+            raise HTTPException(status_code=404, detail="없는 TODO입니다")
 
+        if body.title is not None:
+            todo.title = body.title
+
+        session.commit()
+        session.refresh(todo)
+        return to_dict(todo)
 
 @app.delete("/todos/{todo_id}", status_code=204)
 def delete_todo(todo_id: int):
