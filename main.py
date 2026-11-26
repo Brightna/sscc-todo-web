@@ -144,6 +144,7 @@ def update_todo(todo_id: int, body: TodoUpdate):
         if body.title is not None:
             todo.title = body.title
 
+
         if body.completed is not None:
             todo.completed = body.completed
 
