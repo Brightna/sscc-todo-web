@@ -159,4 +159,10 @@ def delete_todo(todo_id: int):
     1. session.get(Todo, todo_id)로 찾고, 없으면 404
     2. session.delete(todo) 뒤 session.commit()
     """
-    raise HTTPException(status_code=501, detail="아직 구현하지 않았습니다")
+    with Session(engine) as session:
+        todo = session.get(Todo, todo_id)
+        if todo is None:
+            raise HTTPException(status_code=404, detail="없는 TODO입니다")
+
+        session.delete(todo)
+        session.commit()
